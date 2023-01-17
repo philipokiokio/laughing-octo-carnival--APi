@@ -18,12 +18,18 @@ class User(AbstractModel):
     last_name: str
 
 
+class PjRate(AbstractModel):
+    count: int
+
+
 class ProjectResp(ProjectCreate):
     id: int
     slug: str
     api_key: str
     org: Optional[Org]
+    is_premium: bool
     creator: Optional[User]
+    count_per_hour: List[PjRate]
 
 
 class ProjectUpdate(AbstractModel):

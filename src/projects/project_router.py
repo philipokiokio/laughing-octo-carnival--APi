@@ -11,7 +11,7 @@ project_router = APIRouter(prefix="/api/v1/project", tags={"Org Projects on Mixe
 
 
 @project_router.post(
-    "{org_slug}/create/",
+    "/{org_slug}/create/",
     status_code=status.HTTP_201_CREATED,
     response_model=schemas.MessageProjectResp,
 )
@@ -42,7 +42,7 @@ def get_projects(org_slug: str, current_user: dict = Depends(get_current_user)):
 def fetch_project(
     org_slug: str, slug: str, current_user: dict = Depends(get_current_user)
 ):
-    resp = project_service.get_project(slug, org_slug)
+    resp = project_service.get_project(org_slug, slug)
     return resp
 
 
@@ -68,7 +68,7 @@ def update_project(
     current_user: dict = Depends(get_current_user),
 ):
 
-    resp = project_service.update_project(slug, update_project)
+    resp = project_service.update_project(org_slug, slug, update_project)
 
     return resp
 

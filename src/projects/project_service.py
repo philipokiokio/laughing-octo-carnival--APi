@@ -23,13 +23,15 @@ class ProjectService:
             status_code=status.HTTP_404_NOT_FOUND,
         )
 
-    def orm_call(project: Project):
+    def orm_call(self, project: Project):
         project_ = jsonable_encoder(project)
 
         if project.org:
             project_["org"] = project.org
         if project.creator:
             project_["creator"] = project.creator
+
+        project_["count_per_hour"] = project.pj_rate
         return project_
 
     def org_check(self, org_slug):
@@ -38,6 +40,7 @@ class ProjectService:
             raise HTTPException(
                 detail="Org does not Exist", status_code=status.HTTP_404_NOT_FOUND
             )
+        return org_check
 
     def create_project(
         self,
@@ -49,7 +52,6 @@ class ProjectService:
         org_check = self.org_check(org_slug)
 
         create_project_ = create_project.dict()
-
         project_check = self.project_repo.get_project_name(
             create_project.name, org_check.id
         )
@@ -106,7 +108,7 @@ class ProjectService:
 
         projects_ = []
         for project in projects:
-            projects_.append(project)
+            projects_.append(self.orm_call(project))
 
         return {
             "message": "Projects retrieved Successful",

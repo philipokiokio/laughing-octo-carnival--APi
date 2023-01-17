@@ -14,9 +14,9 @@ def project_rate_header(project: Project = Depends(mixer_header)):
             project.id
         )
 
-        if pj_rate_for_last_hour.count >= 50:
+        if pj_rate_for_last_hour.count >= 2:
             raise HTTPException(
-                detail="This Project has reached it maximum call for the hour, check back in an hour",
+                detail=f"This Project has reached it maximum call for the hour: {pj_rate_for_last_hour.count}, check back in an hour",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
