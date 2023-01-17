@@ -1,5 +1,7 @@
 from src.app.utils.base_repository import BaseRepo
-from src.projects.models import Project
+from src.projects.models import Project, ProjectRateLimit
+from datetime import datetime, timedelta
+from sqlalchemy import and_
 
 
 class ProjectRepository(BaseRepo):
@@ -43,4 +45,43 @@ class ProjectRepository(BaseRepo):
         return self.base_query().filter(Project.api_key == header_key).first()
 
 
+class ProjectRateRepo(BaseRepo):
+    def base_query(self):
+        return self.db.query(ProjectRateLimit)
+
+    def get_project_rate(self, project_id: int):
+
+        return (
+            self.base_query().filter(ProjectRateLimit.project_id == project_id).first()
+        )
+
+    def get_project_hour(self, project_id):
+
+        return (
+            self.base_query()
+            .filter(
+                ProjectRateLimit.project_id == project_id,
+                and_(
+                    ProjectRateLimit.date_updated <= datetime.now(),
+                    ProjectRateLimit.date_updated > datetime.now() - timedelta(hours=1),
+                ),
+            )
+            .first()
+        )
+
+    def create_project_rate(self, new_project_rate) -> ProjectRateLimit:
+        new_pj_rate = ProjectRateLimit(**new_project_rate)
+        self.db.add(new_pj_rate)
+        self.db.commit()
+        self.db.refresh(new_pj_rate)
+        return new_pj_rate
+
+    def update_project_rate(self, project_rate: ProjectRateLimit) -> ProjectRateLimit:
+
+        self.db.commit()
+        self.db.refresh(project_rate)
+        return project_rate
+
+
 project_repo = ProjectRepository()
+pj_rate_repo = ProjectRateRepo()

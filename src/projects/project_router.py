@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, Header, Depends, HTTPException
 from src.projects import schemas, project_service, models
-from src.projects.mixer_handler import mixer_header
+from src.projects.mixer_handler import project_rate_header
 from src.app.utils.mixers import Mixer
 from src.auth.oauth import get_current_user
 
@@ -78,7 +78,9 @@ def update_project(
     status_code=status.HTTP_200_OK,
     response_model=schemas.ResponseModel,
 )
-def single_event(event: schemas.SingleEvent, project: dict = Depends(mixer_header)):
+def single_event(
+    event: schemas.SingleEvent, project: dict = Depends(project_rate_header)
+):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
     bool = mixer.track_single_event(event.distinct_id, event.event)
@@ -103,7 +105,7 @@ def single_event(event: schemas.SingleEvent, project: dict = Depends(mixer_heade
     response_model=schemas.ResponseModel,
 )
 def event_props(
-    event: schemas.EventProp, project: models.Project = Depends(mixer_header)
+    event: schemas.EventProp, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -129,7 +131,7 @@ def event_props(
     response_model=schemas.ResponseModel,
 )
 def update_distinct_id(
-    event: schemas.Alias, project: models.Project = Depends(mixer_header)
+    event: schemas.Alias, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -155,7 +157,7 @@ def update_distinct_id(
 #     response_model=schemas.ResponseModel,
 # )
 # def merge_distinct_ids(
-#     event: schemas.Merger, project: models.Project = Depends(mixer_header)
+#     event: schemas.Merger, project: models.Project = Depends(project_rate_header)
 # ):
 
 #     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -181,7 +183,7 @@ def update_distinct_id(
     response_model=schemas.ResponseModel,
 )
 def create_people_props(
-    event: schemas.PeopleProp, project: models.Project = Depends(mixer_header)
+    event: schemas.PeopleProp, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -207,7 +209,7 @@ def create_people_props(
     response_model=schemas.ResponseModel,
 )
 def set_people_prop_once(
-    event: schemas.PeopleProp_, project: models.Project = Depends(mixer_header)
+    event: schemas.PeopleProp_, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -233,7 +235,7 @@ def set_people_prop_once(
     response_model=schemas.ResponseModel,
 )
 def increment_people_prop(
-    event: schemas.PeopleProp_, project: models.Project = Depends(mixer_header)
+    event: schemas.PeopleProp_, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -259,7 +261,7 @@ def increment_people_prop(
     response_model=schemas.ResponseModel,
 )
 def append_people_prop(
-    event: schemas.PeopleProp_, project: models.Project = Depends(mixer_header)
+    event: schemas.PeopleProp_, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -285,7 +287,7 @@ def append_people_prop(
     response_model=schemas.ResponseModel,
 )
 def union_people_prop(
-    event: schemas.PeopleUnion, project: models.Project = Depends(mixer_header)
+    event: schemas.PeopleUnion, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -311,7 +313,7 @@ def union_people_prop(
     response_model=schemas.ResponseModel,
 )
 def unset_people_prop(
-    event: schemas.PeopleUnset, project: models.Project = Depends(mixer_header)
+    event: schemas.PeopleUnset, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -337,7 +339,7 @@ def unset_people_prop(
     response_model=schemas.ResponseModel,
 )
 def remove_people_prop(
-    event: schemas.PeopleProp_, project: models.Project = Depends(mixer_header)
+    event: schemas.PeopleProp_, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -363,7 +365,7 @@ def remove_people_prop(
     response_model=schemas.ResponseModel,
 )
 def delete_people_prop(
-    event: schemas.Distinct, project: models.Project = Depends(mixer_header)
+    event: schemas.Distinct, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -389,7 +391,7 @@ def delete_people_prop(
     response_model=schemas.ResponseModel,
 )
 def charge_people_prop(
-    event: schemas.ChargePeople, project: models.Project = Depends(mixer_header)
+    event: schemas.ChargePeople, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -415,7 +417,7 @@ def charge_people_prop(
     response_model=schemas.ResponseModel,
 )
 def clear_people_charge(
-    event: schemas.Distinct, project: models.Project = Depends(mixer_header)
+    event: schemas.Distinct, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -441,7 +443,7 @@ def clear_people_charge(
     response_model=schemas.ResponseModel,
 )
 def create_group(
-    event: schemas.GroupProp, project: models.Project = Depends(mixer_header)
+    event: schemas.GroupProp, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -467,7 +469,7 @@ def create_group(
     response_model=schemas.ResponseModel,
 )
 def create_group_once(
-    event: schemas.GroupProp, project: models.Project = Depends(mixer_header)
+    event: schemas.GroupProp, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -493,7 +495,7 @@ def create_group_once(
     response_model=schemas.ResponseModel,
 )
 def group_union(
-    event: schemas.GroupProp, project: models.Project = Depends(mixer_header)
+    event: schemas.GroupProp, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -519,7 +521,7 @@ def group_union(
     response_model=schemas.ResponseModel,
 )
 def group_unset(
-    event: schemas.GroupUnset, project: models.Project = Depends(mixer_header)
+    event: schemas.GroupUnset, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -545,7 +547,7 @@ def group_unset(
     response_model=schemas.ResponseModel,
 )
 def group_remove(
-    event: schemas.GroupProp, project: models.Project = Depends(mixer_header)
+    event: schemas.GroupProp, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -571,7 +573,7 @@ def group_remove(
     response_model=schemas.ResponseModel,
 )
 def delete_group(
-    event: schemas.BaseGroup, project: models.Project = Depends(mixer_header)
+    event: schemas.BaseGroup, project: models.Project = Depends(project_rate_header)
 ):
 
     mixer = Mixer(project.mixpanel_key, project.data_center)
@@ -597,7 +599,7 @@ def delete_group(
 #     response_model=schemas.ResponseModel,
 # )
 # def update_groups(
-#     event: schemas.GroupMessage, project: models.Project = Depends(mixer_header)
+#     event: schemas.GroupMessage, project: models.Project = Depends(project_rate_header)
 # ):
 
 #     mixer = Mixer(project.mixpanel_key, project.data_center)

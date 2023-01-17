@@ -10,7 +10,7 @@ class Project(AbstractModel):
     slug = Column(String, nullable=False)
 
     org_id = Column(
-        Integer, ForeignKey("orgnization.id", ondelete="CASCADE"), nullable=False
+        Integer, ForeignKey("organization.id", ondelete="CASCADE"), nullable=False
     )
     api_key = Column(String, nullable=False)
     data_center = Column(String, nullable=True)
@@ -22,6 +22,7 @@ class Project(AbstractModel):
     )
     org = relationship("Organization")
     creator = relationship("User")
+    pj_rate = relationship("ProjectRateLimit", back_populates="project")
 
 
 class ProjectRateLimit(AbstractModel):
@@ -31,3 +32,4 @@ class ProjectRateLimit(AbstractModel):
         Integer, ForeignKey("projects.id", ondelete="CASCADE"), nullable=False
     )
     count = Column(Integer, nullable=False, default=0)
+    project = relationship("Project")

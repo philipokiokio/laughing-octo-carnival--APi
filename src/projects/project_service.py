@@ -1,4 +1,9 @@
-from src.projects.project_repository import project_repo, Project
+from src.projects.project_repository import (
+    project_repo,
+    Project,
+    pj_rate_repo,
+    ProjectRateLimit,
+)
 from src.projects import schemas
 from src.app.utils.slugger import slug_gen
 from fastapi import status, HTTPException
@@ -10,6 +15,7 @@ class ProjectService:
     def __init__(self):
         self.project_repo = project_repo
         self.org_repo = org_repo
+        self.pj_rate_repo = pj_rate_repo
 
     def project_does_not_exist(self):
         raise HTTPException(
@@ -58,6 +64,10 @@ class ProjectService:
         create_project_["created_by"] = current_user.id
 
         new_project = self.project_repo.create_project(create_project_)
+
+        project_rate_data = {"project_id": new_project.id, "count": 0}
+        self.pj_rate_repo.create_project_rate(project_rate_data)
+
         new_project_ = self.orm_call(new_project)
         return {
             "message": "Project Created Successfully",
@@ -129,6 +139,15 @@ class ProjectService:
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
         return project
+
+    def get_project_rate_limit(self, project_id) -> ProjectRateLimit:
+        pj_rate = self.pj_rate_repo.get_project_rate(project_id)
+        if not pj_rate:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Project Rate Info does not exist",
+            )
+        return pj_rate
 
     def update_project(
         self, org_slug: str, slug: str, update_project: schemas.ProjectUpdate
