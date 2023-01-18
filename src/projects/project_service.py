@@ -151,7 +151,7 @@ class ProjectService:
             )
         return pj_rate
 
-    def get_pjs_rate_limit(self):
+    def job_pjs_rate_limit(self):
         pj_rates = pj_rate_repo.get_all_pj_rate()
 
         if not pj_rates:
