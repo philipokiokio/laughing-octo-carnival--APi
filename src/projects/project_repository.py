@@ -1,7 +1,7 @@
 from src.app.utils.base_repository import BaseRepo
 from src.projects.models import Project, ProjectRateLimit
 from datetime import datetime, timedelta
-from sqlalchemy import and_
+from sqlalchemy import or_
 
 
 class ProjectRepository(BaseRepo):
@@ -61,7 +61,7 @@ class ProjectRateRepo(BaseRepo):
             self.base_query()
             .filter(
                 ProjectRateLimit.project_id == project_id,
-                and_(
+                or_(
                     ProjectRateLimit.date_updated <= datetime.now(),
                     ProjectRateLimit.date_updated > datetime.now() - timedelta(hours=1),
                 ),

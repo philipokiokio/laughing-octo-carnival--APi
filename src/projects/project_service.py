@@ -137,7 +137,7 @@ class ProjectService:
         project: Project = project
         if not project.mixpanel_key:
             raise HTTPException(
-                "This Project does not have a Mix Pannel Key",
+                detail="This Project does not have a Mix Pannel Key",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
         return project
