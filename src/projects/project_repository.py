@@ -69,6 +69,17 @@ class ProjectRateRepo(BaseRepo):
             .first()
         )
 
+    def update_pj_rate_base_hour(self, pj_rate: ProjectRateLimit):
+
+        pj_rate.count = 0
+
+        self.db.commit()
+        self.db.refresh(pj_rate)
+        return True
+
+    def get_all_pj_rate(self):
+        return self.base_query().all()
+
     def create_project_rate(self, new_project_rate) -> ProjectRateLimit:
         new_pj_rate = ProjectRateLimit(**new_project_rate)
         self.db.add(new_pj_rate)

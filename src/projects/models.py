@@ -1,6 +1,7 @@
 from src.app.utils.models_utils import AbstractModel
 from sqlalchemy import Column, String, Boolean, Integer, ForeignKey, text
 from sqlalchemy.orm import relationship
+from src.organization.models import Organization
 
 
 class Project(AbstractModel):

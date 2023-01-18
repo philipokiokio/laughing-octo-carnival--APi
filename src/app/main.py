@@ -5,6 +5,8 @@ from src.app.config import db_settings
 from src.auth.auth_router import user_router
 from src.organization.org_router import org_router
 from fastapi.middleware.cors import CORSMiddleware
+from src.app.celery_jobs import add
+
 
 app = FastAPI()
 

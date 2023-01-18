@@ -151,6 +151,15 @@ class ProjectService:
             )
         return pj_rate
 
+    def get_pjs_rate_limit(self):
+        pj_rates = pj_rate_repo.get_all_pj_rate()
+
+        if not pj_rates:
+            return "No Projects to Revert base count"
+        for pj_rate in pj_rates:
+            pj_rate_repo.update_pj_rate_base_hour(pj_rate)
+        return "Project Rates for all project count is reverted to 0"
+
     def update_project(
         self, org_slug: str, slug: str, update_project: schemas.ProjectUpdate
     ):
