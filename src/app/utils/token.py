@@ -1,6 +1,7 @@
-from itsdangerous.url_safe import URLSafeSerializer
-from src.app.config import auth_settings
 from itsdangerous.exc import BadSignature
+from itsdangerous.url_safe import URLSafeSerializer
+
+from src.app.config import auth_settings
 
 tokens = URLSafeSerializer(f"{auth_settings.access_secret_key}")
 

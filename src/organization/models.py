@@ -1,7 +1,8 @@
-from src.app.utils.models_utils import AbstractModel
-from sqlalchemy import Column, String, Integer, Boolean, ForeignKey, text
-from src.auth.models import User
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, text
 from sqlalchemy.orm import relationship
+
+from src.app.utils.models_utils import AbstractModel
+from src.auth.models import User
 
 
 class Organization(AbstractModel):

@@ -1,5 +1,6 @@
-from pydantic import BaseModel, BaseSettings, EmailStr
 from enum import Enum
+
+from pydantic import BaseModel, BaseSettings, EmailStr
 
 
 class AbstractModel(BaseModel):

@@ -1,8 +1,9 @@
 from pathlib import Path
 from typing import List
-from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
-from app.config import mail_settings, EmailStr
 
+from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
+
+from app.config import EmailStr, mail_settings
 
 conf = ConnectionConfig(
     MAIL_USERNAME=mail_settings.mail_username,

@@ -1,5 +1,6 @@
-from src.app.utils.db_utils import SessionLocal
 from sqlalchemy.orm import Session
+
+from src.app.utils.db_utils import SessionLocal
 
 
 class BaseRepo:

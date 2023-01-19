@@ -1,13 +1,14 @@
-from src.organization import schemas
-from src.organization.models import OrgMember, Organization
 from fastapi import HTTPException, status
-from src.organization.org_repository import org_member_repo, org_repo
 from fastapi.encoders import jsonable_encoder
-from src.app.utils.schemas_utils import RoleOptions
-from src.app.utils.token import gen_token, retrieve_token
 from starlette.requests import Request
-from src.auth.auth_repository import user_repo
+
+from src.app.utils.schemas_utils import RoleOptions
 from src.app.utils.slugger import slug_gen
+from src.app.utils.token import gen_token, retrieve_token
+from src.auth.auth_repository import user_repo
+from src.organization import schemas
+from src.organization.models import Organization, OrgMember
+from src.organization.org_repository import org_member_repo, org_repo
 
 
 class OrgService:

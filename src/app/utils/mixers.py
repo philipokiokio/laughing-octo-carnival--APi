@@ -1,5 +1,7 @@
-from mixpanel import Mixpanel, Consumer
 from datetime import datetime
+
+from mixpanel import Consumer, Mixpanel
+
 from src.app.utils.schemas_utils import MixPanelDataCenter
 
 

@@ -1,9 +1,10 @@
-from fastapi import APIRouter, status, Depends
-from src.organization.org_service import org_service
-from src.organization import schemas
-from src.auth.oauth import get_current_user
-from src.auth.models import User
+from fastapi import APIRouter, Depends, status
 from starlette.requests import Request
+
+from src.auth.models import User
+from src.auth.oauth import get_current_user
+from src.organization import schemas
+from src.organization.org_service import org_service
 
 org_router = APIRouter(prefix="/api/v1/org", tags={"Organization and Org Members"})
 

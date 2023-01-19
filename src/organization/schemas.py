@@ -1,6 +1,8 @@
-from src.app.utils.schemas_utils import AbstractModel, ResponseModel, RoleOptions, User
-from pydantic import EmailStr
 from typing import List, Optional
+
+from pydantic import EmailStr
+
+from src.app.utils.schemas_utils import AbstractModel, ResponseModel, RoleOptions, User
 
 
 class OrgCreate(AbstractModel):

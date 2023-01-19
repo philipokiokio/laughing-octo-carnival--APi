@@ -1,7 +1,8 @@
-from src.app.database import SQLALCHEMY_DATABASE_URL, create_engine, sessionmaker, Base
-from fastapi.testclient import TestClient
-from src.auth.oauth import create_access_token, create_refresh_token
 import pytest
+from fastapi.testclient import TestClient
+
+from src.app.database import SQLALCHEMY_DATABASE_URL, Base, create_engine, sessionmaker
+from src.auth.oauth import create_access_token, create_refresh_token
 
 TestSQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL + "_test"
 
@@ -24,4 +25,5 @@ def session():
 
 @pytest.fixture()
 def client(session):
+
     pass
