@@ -1,29 +1,44 @@
-from src.projects.project_repository import (
-    project_repo,
-    Project,
-    pj_rate_repo,
-    ProjectRateLimit,
-)
-from src.projects import schemas
-from src.app.utils.slugger import slug_gen
-from fastapi import status, HTTPException
-from src.organization.org_repository import org_repo
+from fastapi import HTTPException, status
 from fastapi.encoders import jsonable_encoder
+
+from src.app.utils.slugger import slug_gen
+from src.organization.org_repository import org_repo
+from src.projects import schemas
+from src.projects.project_repository import (
+    Project,
+    ProjectRateLimit,
+    pj_rate_repo,
+    project_repo,
+)
 
 
 class ProjectService:
     def __init__(self):
+        """Iniitializing Repositories of Project, Organizations and Project Rate Limit"""
         self.project_repo = project_repo
         self.org_repo = org_repo
         self.pj_rate_repo = pj_rate_repo
 
     def project_does_not_exist(self):
+        """Throw HTTPException if a Project does not exist.
+
+        Raises:
+            HTTPException: detail and a status code is provided.
+        """
         raise HTTPException(
             detail="This Project does not exist",
             status_code=status.HTTP_404_NOT_FOUND,
         )
 
     def orm_call(self, project: Project):
+        """Calls Relationships and format data to response model.
+
+        Args:
+            project (Project): SQLAlchemy
+
+        Returns:
+            _type_: Project with relationship calls.
+        """
         project_ = jsonable_encoder(project)
 
         if project.org:
@@ -34,7 +49,18 @@ class ProjectService:
         project_["count_per_hour"] = project.pj_rate
         return project_
 
-    def org_check(self, org_slug):
+    def org_check(self, org_slug: str):
+        """Check if Organization exist.
+
+        Args:
+            org_slug (str): Organization slug
+
+        Raises:
+            HTTPException: If Organization does not exist.
+
+        Returns:
+            _type_: Organization
+        """
         org_check = self.org_repo.get_org(org_slug)
         if not org_check:
             raise HTTPException(
@@ -49,6 +75,14 @@ class ProjectService:
         current_user,
     ) -> schemas.MessageProjectResp:
 
+        """Create Project
+
+        Raises:
+            HTTPException: If Project Exists.
+
+        Returns:
+            _type_: Response Model
+        """
         org_check = self.org_check(org_slug)
 
         create_project_ = create_project.dict()
@@ -78,6 +112,18 @@ class ProjectService:
         }
 
     def get_project(self, org_slug: str, slug: str) -> schemas.MessageProjectResp:
+        """Get a Project based on project slug and org_slug
+
+        Args:
+            org_slug (str): Organization Slug
+            slug (str): Project slug
+
+        Raises:
+            HTTPException: Raises Project does not exists.
+
+        Returns:
+            schemas.MessageProjectResp: Response Model
+        """
         org_check = self.org_check(org_slug)
 
         project = self.project_repo.get_project(slug, org_check.id)
@@ -96,6 +142,17 @@ class ProjectService:
         }
 
     def get_projects(self, org_slug) -> schemas.MessageListProjectResp:
+        """Get a Project based on org_slug
+
+        Args:
+            org_slug (str): Organization Slug
+
+        Raises:
+            HTTPException: Raises Project does not exists.
+
+        Returns:
+            schemas.MessageListProjectResp: Response Model
+        """
         org_check = self.org_check(org_slug)
 
         projects = self.project_repo.get_projects(org_check.id)
@@ -117,6 +174,18 @@ class ProjectService:
         }
 
     def delete_project(self, slug: str, org_slug: str):
+        """Delete a Project based on project slug and org_slug
+
+        Args:
+            org_slug (str): Organization Slug
+            slug (str): Project slug
+
+        Raises:
+            HTTPException: Raises Project does not exists.
+
+        Returns:
+            Response Model
+        """
         org_check = self.org_check(org_slug)
 
         project = self.project_repo.get_project(slug, org_check.id)
@@ -130,6 +199,15 @@ class ProjectService:
         return {"status": status.HTTP_204_NO_CONTENT}
 
     def get_project_by_header(self, header: str):
+
+        """Get Project by Header.
+
+        Raises:
+            HTTPException: Project not found or No Mixpanel Key
+
+        Returns:
+            _type_: Project.
+        """
         project = project_repo.get_project_by_header(header)
         if not project:
             self.project_does_not_exist()
@@ -143,6 +221,15 @@ class ProjectService:
         return project
 
     def get_project_rate_limit(self, project_id) -> ProjectRateLimit:
+
+        """Get a Project associated Project Rate Limit
+
+        Raises:
+            HTTPException: Project Rate Limit does not exist.
+
+        Returns:
+            _type_: Project Rate Limit instance.
+        """
         pj_rate = self.pj_rate_repo.get_project_rate(project_id)
         if not pj_rate:
             raise HTTPException(
@@ -152,6 +239,13 @@ class ProjectService:
         return pj_rate
 
     def job_pjs_rate_limit(self):
+
+        """Reverting all count for project rate limit to 0
+
+
+        Returns:
+            str: Info for logging the celery Job
+        """
         pj_rates = pj_rate_repo.get_all_pj_rate()
 
         if not pj_rates:
@@ -163,6 +257,16 @@ class ProjectService:
     def update_project(
         self, org_slug: str, slug: str, update_project: schemas.ProjectUpdate
     ):
+        """Update Project
+
+        Args:
+            org_slug (str): Organization slug
+            slug (str): Project slug
+            update_project (schemas.ProjectUpdate): Update for Project DB Record
+
+        Returns:
+            _type_: Response Model
+        """
         org_check = self.org_check(org_slug)
 
         project = self.project_repo.get_project(slug, org_check.id)

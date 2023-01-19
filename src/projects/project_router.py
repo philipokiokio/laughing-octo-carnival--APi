@@ -1,8 +1,9 @@
-from fastapi import APIRouter, status, Header, Depends, HTTPException
-from src.projects import schemas, project_service, models
-from src.projects.mixer_handler import project_rate_header
+from fastapi import APIRouter, Depends, Header, HTTPException, status
+
 from src.app.utils.mixers import Mixer
 from src.auth.oauth import get_current_user
+from src.projects import models, project_service, schemas
+from src.projects.mixer_handler import project_rate_header
 
 project_service = project_service.project_service
 
@@ -20,6 +21,16 @@ def create_project(
     project: schemas.ProjectCreate,
     current_user: dict = Depends(get_current_user),
 ):
+    """Create a Project
+
+    Args:
+        org_slug (str): Organization Slug
+        project (schemas.ProjectCreate): Project info to be created.
+        current_user (dict): prevents unauthenicated access and allows us to have access to the logged in user, using this endpoint. Defaults to Depends(get_current_user).
+
+    Returns:
+        _type_: Response Model
+    """
     resp = project_service.create_project(org_slug, project, current_user)
     return resp
 
@@ -30,6 +41,13 @@ def create_project(
     response_model=schemas.MessageListProjectResp,
 )
 def get_projects(org_slug: str, current_user: dict = Depends(get_current_user)):
+
+    """GET all project associated with Org_Slug
+
+    Returns:
+        _type_: Response Model
+    """
+
     resp = project_service.get_projects(org_slug)
     return resp
 
@@ -42,6 +60,17 @@ def get_projects(org_slug: str, current_user: dict = Depends(get_current_user)):
 def fetch_project(
     org_slug: str, slug: str, current_user: dict = Depends(get_current_user)
 ):
+    """Get a singular Project.
+
+    Args:
+        org_slug (str): Organization slug
+        slug (str): Project Slug
+        current_user (dict,): _description_. Defaults to Depends(get_current_user).
+
+    Returns:
+        _type_: Response Model
+
+    """
     resp = project_service.get_project(org_slug, slug)
     return resp
 
@@ -52,6 +81,12 @@ def fetch_project(
 def delete_project(
     org_slug: str, slug: str, current_user: dict = Depends(get_current_user)
 ):
+
+    """Delete Project
+
+    Returns:
+        _type_: status code
+    """
     resp = project_service.delete_project(slug, org_slug)
     return resp
 
@@ -67,7 +102,17 @@ def update_project(
     update_project: schemas.ProjectUpdate,
     current_user: dict = Depends(get_current_user),
 ):
+    """Update Project.
 
+    Args:
+        org_slug (str): Organizationnn slug
+        slug (str): Project Slug
+        update_project (schemas.ProjectUpdate): Update Body
+        current_user (dict): _description_. Defaults to Depends(get_current_user).
+
+    Returns:
+        _type_: Response Model
+    """
     resp = project_service.update_project(org_slug, slug, update_project)
 
     return resp

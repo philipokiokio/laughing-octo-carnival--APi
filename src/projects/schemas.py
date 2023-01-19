@@ -1,5 +1,6 @@
-from src.app.utils.schemas_utils import AbstractModel, ResponseModel, MixPanelDataCenter
-from typing import List, Optional, Dict
+from typing import Dict, List, Optional
+
+from src.app.utils.schemas_utils import AbstractModel, MixPanelDataCenter, ResponseModel
 
 
 class ProjectCreate(AbstractModel):

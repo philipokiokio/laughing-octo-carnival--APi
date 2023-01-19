@@ -9,7 +9,6 @@ class Project(AbstractModel):
 
     name = Column(String, nullable=False)
     slug = Column(String, nullable=False)
-
     org_id = Column(
         Integer, ForeignKey("organization.id", ondelete="CASCADE"), nullable=False
     )
