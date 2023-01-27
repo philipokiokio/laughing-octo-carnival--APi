@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, Header, HTTPException, status
 
 from src.app.utils.mixers import Mixer
 from src.auth.oauth import get_current_user
+from src.permissions.org_permissions import test_permission
 from src.projects import models, project_service, schemas
 from src.projects.mixer_handler import project_rate_header
 
@@ -40,7 +41,7 @@ def create_project(
     status_code=status.HTTP_200_OK,
     response_model=schemas.MessageListProjectResp,
 )
-def get_projects(org_slug: str, current_user: dict = Depends(get_current_user)):
+def get_projects(org_slug: str, current_user: dict = Depends(test_permission)):
 
     """GET all project associated with Org_Slug
 
@@ -58,7 +59,10 @@ def get_projects(org_slug: str, current_user: dict = Depends(get_current_user)):
     response_model=schemas.MessageProjectResp,
 )
 def fetch_project(
-    org_slug: str, slug: str, current_user: dict = Depends(get_current_user)
+    org_slug: str,
+    slug: str,
+    current_user: dict = Depends(test_permission)
+    # get_current_user)
 ):
     """Get a singular Project.
 
